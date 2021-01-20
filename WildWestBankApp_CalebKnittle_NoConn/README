@@ -1,0 +1,20 @@
+Tumbleweed Banking and Trust Company (TB&T) - Wild West Banking App
+
+About this Application:
+This application can be used to simulate financial transactions with a Wild-West-themed 
+financial institution (TB&T).
+
+Current users may login or, if they are a new user, may register as a user. Once logged-in,
+a user may view and update their personal profile, view and manage their accounts, view their
+previous transactions, and delete their own user profile.
+
+A Super-User may be created using a specified administrator password before creating their other
+user credentials. A super-user can perform all of the functions of a normal user, but they are also
+able to view, update, delete, and perform other user functions for any user. A super-user may also
+view all users or all accounts in the database at once.
+
+
+How to Use this Application:
+When prompted, type the number(s) or character(s) corresponding to the listed function you would like
+to perform, or you may need to type some other input for a username, password, etc. Press Enter to
+confirm your choice or submit your input.
