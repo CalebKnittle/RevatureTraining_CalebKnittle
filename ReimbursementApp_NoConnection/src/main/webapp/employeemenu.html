@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Menu</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+
+
+    <style>
+
+        h1, h3{
+            text-align: center;
+        }
+
+
+    </style>
+
+
+
+</head>
+<body onload="getEmployee()" style="text-align: center; align-items: center; background-color: tan;">
+
+    <div>
+        <h1>Employee Menu</h1>
+        
+        <h3>Submit New Tuition Reimbursement Request:</h3>
+        <button onclick="createForm()">Create Form</button>
+
+        <h3>Approve Forms:</h3>
+        <button onclick="approveForm()">Approve Forms</button>
+
+        <h3>Logout</h3>
+        <button onclick="logout()">Logout</button>
+    </div>
+
+    <br>
+
+    <div>        
+        <h3 id="name"></h3>
+        <h3 id="title"></h3>
+        <h3 id="funds">Available Funds: $1000.00</h3>
+    </div>
+
+</body>
+
+<script>
+
+function getEmployee (){
+
+    let xhttp = new XMLHttpRequest();
+
+    xhttp.onreadystatechange = function() {
+
+        if(this.readyState == 4 && this.status == 200) {
+                
+                let employee = JSON.parse(this.responseText);
+                console.log(employee); //"Cannot read property value of null" for employee.value
+                console.log(typeof employee);
+
+                if(employee == null) {
+                    console.log("Not Logged in Properly");
+                    logout();
+                    //window.location.href= "http://localhost:8080/ReimbursementApp/"; //Return to home page
+                } else {
+
+                    document.getElementById("name").innerHTML= ("Welcome, " + employee.firstName + " " + employee.lastName);
+                    //document.getElementById("title").innerHTML= (employee.title);
+                    //document.getElementById("email").innerHTML= (employee.email);
+                }
+                //Add display first/last name, email, department, job title, and supervisor
+
+            }
+    }
+    xhttp.open("POST", "http://localhost:8080/ReimbursementApp/getEmployee.do", true);
+
+    xhttp.setRequestHeader("Content-Type", "application/json");
+
+    xhttp.send();
+}
+
+function logout() {
+
+    let xhttp = new XMLHttpRequest();
+
+    xhttp.onreadystatechange = function() {
+
+        if(this.readyState == 4 && this.status == 200) {
+                
+                //let employee = JSON.parse(this.responseText); //Should set to null
+                //console.log(employee);
+                window.location.href= "http://localhost:8080/ReimbursementApp/"; //Return to home page
+
+            }
+
+    }
+    xhttp.open("POST", "http://localhost:8080/ReimbursementApp/logout.do", true);
+
+    xhttp.setRequestHeader("Content-Type", "application/json");
+
+    xhttp.send();
+}
+
+function createForm() {
+    window.location.href= "http://localhost:8080/ReimbursementApp/createform.html";
+}
+
+function approveForm() {
+    window.location.href= "http://localhost:8080/ReimbursementApp/approveform.html";
+}
+
+
+</script>
+
+</html>

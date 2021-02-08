@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Silver Ridge TRMS</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+
+
+    <style>
+
+        body {
+            background-image: url(https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.agri-pulse.com%2Farticles%2F10148-pass-through-tax-rules-seen-raising-some-farm-tax-bills&psig=AOvVaw3sqqtYeHB40Zk-tXbFDuQp&ust=1612623393525000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCNiD2reA0-4CFQAAAAAdAAAAABAD);
+                /*opacity: 50%;*/
+            background-color: lightgreen; /* Used if the image is unavailable */
+            height: 500px; /* You must set a specified height */
+            background-position: center; /* Center the image */
+            background-repeat: no-repeat; /* Do not repeat the image */
+            background-size: cover;
+        }
+
+        #loginBox {
+            text-align: center;
+            background-color: tan;
+            width: 50%;
+            margin-left: 25%;
+            
+        }
+
+        #TitleBanner {
+            text-align: center;
+        }
+
+    </style>
+
+</head>
+<body>
+
+    <div id="TitleBanner">
+        <h4>Welcome to the</h4> <br>
+        <h1>Silver Ridge Farms Inc.</h1> <br>
+        <h1>Tuition Reimbursement Management System</h1>
+    </div>
+
+    <div div="container" id="loginBox">
+        <h3>Username</h3>
+        <input type="text" id="username">
+
+        <h3>Password</h3>
+        <input type="text" id="password">
+
+        <br>
+        <button onclick="emplLogin()" id="loginButton">Login</button>
+
+        <p id="message"></p>
+    </div>
+    
+</body>
+
+<script>
+
+    function emplLogin() {
+
+    let eusername = document.getElementById("username").value;
+    let epassword = document.getElementById("password").value;
+
+    //Make JS Object
+    let loginInfo = {
+        username: eusername,
+        password: epassword
+    }
+
+    /*let employee = {
+        emplid: 0,
+        username: eusername,
+        password: epassword
+    }*/
+
+    console.log(loginInfo); //REMOVE, Testing Only
+
+    //AJAX Call
+    let xhttp = new XMLHttpRequest();
+
+    xhttp.onreadystatechange = function() {
+
+        if(this.readyState == 4 && this.status == 200) {
+                console.log(this.responseText);
+
+                let employee = JSON.parse(this.responseText);
+                console.log(employee);
+
+                if(employee != null) {
+                    window.location.href= "http://localhost:8080/ReimbursementApp/employeemenu.html";
+                } else {
+                    console.log("Invalid Username or Password");
+                    document.getElementById("message").innerHTML="Invalid Username or Password";
+                }
+            }
+
+    }
+
+    xhttp.open("POST", "http://localhost:8080/ReimbursementApp/login.do", true);
+
+    //Set request header -> indicates request body will be JSON
+    xhttp.setRequestHeader("Content-Type", "application/json");
+
+    //Much easier to stringify an object
+    xhttp.send(JSON.stringify(loginInfo));
+
+    }
+
+</script>
+</html>

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TRMS Approvals</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+
+    <style>
+
+        
+
+    </style>
+
+</head>
+<body onload="getEmployee(); getPendingForms();">
+
+    <div div="container"></div>
+    <button class="btn btn-primary" onclick="goBack();">Go Back</button>
+
+    <table class="table table-striped table-bordered table-hover">
+        <thead class="thead-dark">
+            <tr>
+                <th>Requestor</th>
+                <th>Event Name</th>
+                <th>Event Date</th>
+                <th>Event Cost</th>
+                <th>Deny Request</th>
+                <th>Approve Request</th>
+
+            </tr>
+        </thead>
+        <tbody id="mytbody" class="tbody">
+
+        </tbody>
+
+
+    </table>
+</div>
+
+
+    
+</body>
+<script>
+
+function getEmployee () {
+
+let xhttp = new XMLHttpRequest();
+
+xhttp.onreadystatechange = function() {
+
+    if(this.readyState == 4 && this.status == 200) {
+            
+            let employee = JSON.parse(this.responseText);
+            console.log(employee);
+            //Check if null, then redirect to home page (login)
+            if(employee == null) {
+                    console.log("Not Logged in Properly");
+                    //logout();
+                    window.location.href= "http://localhost:8080/ReimbursementApp/employeemenu.html"; //Return to home page
+                }
+
+            //set emplID
+            loggedInEmplID = employee.id;
+
+        }
+    }
+    xhttp.open("POST", "http://localhost:8080/ReimbursementApp/getEmployee.do", true);
+
+    xhttp.setRequestHeader("Content-Type", "application/json");
+
+    xhttp.send();
+}
+
+function getPendingForms() {
+
+    let xhttp = new XMLHttpRequest();
+
+xhttp.onreadystatechange = function() {
+
+    if(this.readyState == 4 && this.status == 200) {
+            
+            var pendingForms = JSON.parse(this.responseText); //Should auto be an array
+            console.log(typeof pendingForms);
+            console.log(pendingForms);
+            console.log(pendingForms.length);
+
+
+
+            for(var i = 0; i < pendingForms.length; i++) {
+
+                var tr = document.createElement('tr');   
+
+                var td1 = document.createElement('td');
+                td1.innerHTML = pendingForms[i].requestor;
+                var td2 = document.createElement('td');
+                td2.innerHTML = pendingForms[i].eventName;
+                var td3 = document.createElement('td');
+                td3.innerHTML = pendingForms[i].eventDate;
+                var td4 = document.createElement('td');
+                td4.innerHTML = pendingForms[i].cost;
+                var td5 = document.createElement('td');
+                td5.innerHTML = '<button onclick="denyForm(' + pendingForms[i].id + ');">Deny</button>';
+                var td6 = document.createElement('td');
+                td6.innerHTML = '<button onclick="approveForm(' + pendingForms[i].id + ');">Approve</button>';
+
+                /*var text1 = document.createTextNode('Text1');
+                var text2 = document.createTextNode('Text2');
+                var text3 = document.createTextNode('Text3');
+                var text4 = document.createTextNode('Text4');
+
+                td1.appendChild(text1);
+                td2.appendChild(text2);
+                td3.appendChild(text3);
+                td4.appendChild(text4);*/
+
+                tr.appendChild(td1);
+                tr.appendChild(td2);
+                tr.appendChild(td3);
+                tr.appendChild(td4);
+                tr.appendChild(td5);
+                tr.appendChild(td6);
+
+                document.getElementById("mytbody").appendChild(tr);
+
+            }
+
+
+            
+
+        }
+    }
+    xhttp.open("POST", "http://localhost:8080/ReimbursementApp/getPendingForms.do", true);
+
+    xhttp.setRequestHeader("Content-Type", "application/json");
+
+    xhttp.send();
+}
+
+function approveForm(id){
+
+    console.log("Form Approved!");
+    console.log(id);
+
+    let result = {
+        formID: id
+    }
+
+    let xhttp = new XMLHttpRequest();
+
+    xhttp.onreadystatechange = function() {
+
+    if(this.readyState == 4 && this.status == 200) {
+                //window.location.href= "http://localhost:8080/ReimbursementApp/approveform.html";
+                //window.location.reload(); //Refresh Page?
+                document.getElementById("mytbody").innerHTML="";
+                getPendingForms();
+
+            }
+
+        }
+    
+    xhttp.open("POST", "http://localhost:8080/ReimbursementApp/approve.do", true);
+
+    xhttp.setRequestHeader("Content-Type", "application/json");
+
+    xhttp.send(JSON.stringify(result));
+
+
+}
+
+function denyForm(id) {
+    console.log("Form Denied :(");
+    console.log(id);
+
+    let result = {
+        formID: id
+    }
+
+    let xhttp = new XMLHttpRequest();
+
+    xhttp.onreadystatechange = function() {
+
+    if(this.readyState == 4 && this.status == 200) {
+                //window.location.href= "http://localhost:8080/ReimbursementApp/approveform.html"; //Refresh Page?
+                //window.location.reload(); //Refresh Page?
+                getPendingForms();
+
+            }
+
+        }
+    
+    xhttp.open("POST", "http://localhost:8080/ReimbursementApp/deny.do", true);
+
+    xhttp.setRequestHeader("Content-Type", "application/json");
+
+    xhttp.send(JSON.stringify(result));
+
+}
+
+function goBack() {
+
+    window.location.href= "http://localhost:8080/ReimbursementApp/employeemenu.html";
+}
+
+
+
+</script>
+</html>
